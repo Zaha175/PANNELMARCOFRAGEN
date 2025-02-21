@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPU FRAGEN UND ANTWORTEN</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <style>
+        .container {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0;
+        }
+        .questions,
+        .answers {
+            flex: 1;
+        }
+        .questions {
+            padding: 0;
+            margin-right: 20px;
+        }
+        .questions-list {
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .btn-custom {
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 16px;
+            margin-top: 5px;
+            width: 100%;
+            background-color: #1A3A7A; /* Dunkel dunkelblau */
+            color: white;
+        }
+        .btn-custom.active {
+            background-color: #d9a600;
+            color: white;
+        }
+      .answers {
+    padding: 20px; /* Mehr Innenabstand für besseren Inhalt */
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    position: fixed;
+    top: 5%; /* Weiter oben positioniert */
+    left: 50%;
+    transform: translate(-50%, -5%); /* Anpassung an die neue Höhe */
+    z-index: 1000;
+    width: 80%; /* Breiteres Modul */
+    max-height: 85vh; /* Höheres Modul */
+    overflow-y: auto;
+    display: none;
+    border-radius: 10px; /* Optional: Abgerundete Ecken für ein moderneres Aussehen */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); /* Optional: Schatten für bessere Sichtbarkeit */
+}
+        .floating-buttons {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .dark-mode {
+            background-color: #1e1e1e;
+            color: white;
+        }
+        .dark-mode .questions-list { background-color: #333; }
+        .dark-mode .btn-custom { background-color: #1A3A7A; color: white; }
+        .dark-mode .btn-custom.active { background-color: #d9a600; }
+        .dark-mode .answers { background-color: #444; color: white; }
+        .search-bar {
+            margin-bottom: 10px;
+        }
+        .mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .mode-toggle.sun {
+            color: #FFD700; /* Gold for sun */
+        }
+        .mode-toggle.moon {
+            color: #C0C0C0; /* Silver for moon */
+        }
+.knob {
+  width: 100px;
+  height: 100px;
+  border: 2px solid #00ffcc;   /* Farbe der Umrandung */
+  border-radius: 50%;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  
+  /* Zentrierung für alles, was sich darin befindet (z.B. die innere Kugel) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Rotation-Animation */
+  animation: rotateKnob 5s linear infinite;
+}
+
+/* Keyframes für die Rotation des gesamten Knopfs */
+@keyframes rotateKnob {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Kleiner Zeiger im Knopf (visueller Effekt) */
+.knob:after {
+  content: '';
+  width: 6px;
+  height: 40%;
+  background: #00ffcc;
+  position: absolute;
+}
+#cube-container {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column; /* Wieder auf column setzen */
+  align-items: center;
+}
+#cube-container button {
+  margin-bottom: 0; /* Kein Abstand nach unten */
+  margin-top: 5px;  /* Abstand nach oben, damit der Button über dem Würfel erscheint */
+}
+    </style>
+</head>
+<body class="dark-mode">
+    <button class="mode-toggle sun" onclick="toggleDarkMode()">☀️</button>
+    <main class="container">
+        <div class="questions">
+            <select id="filterDropdown" class="form-control mb-3" onchange="filterQuestions()">
+                <option value="all">ALLE</option>
+                <option value="video">MIT VIDEO</option>
+                <option value="image">MIT BILD</option>
+            </select>
+            <div class="questions-list" id="questionsList"></div>
+        </div>
+        <div class="answers" id="answerBox">
+            <button class="btn btn-danger mb-2" onclick="closeAnswer()">SCHLIEßEN</button>
+            <div id="answerContent"></div>
+        </div>
+       <div class="right-side">
+        <div class="knob"></div>
+      </div>
+    <!-- Würfel-Container oben links -->
+ <div id="cube-container">
+        <button class="button button-small" onclick="window.open('https://zaha175.github.io/BILDPUZZLEPLATFORM/', '_blank')">
+            CUB <i class="fas fa-external-link-alt"></i>
+        </button>
+        <iframe src="https://zaha175.github.io/BILDPUZZLEPLATFORM/" style="width: 145px; height: 80px; border: none;"></iframe>
+    </div>
+  </main>
+    <script>
+        const qa_data = [
+          {
+        "question": "Welche Schale der Elektronenhülle hat die stärkste Bindungsenergie?",
+        "answer": "Die innerste Schale der Elektronenhülle besitzt die am stärksten gebundenen Elektronen."
+    },
+    {
+        "question": "Was passiert mit der Bindungsenergie, wenn die Atomgröße zunimmt?",
+        "answer": "Die Bindungsenergie wird kleiner, je größer die Atome werden."
+    },
+    {
+        "question": "Was ist der Unterschied zwischen Heiz- und Beschleunigungsspannung in einer Röntgenröhre?",
+        "answer": "Die Heizspannung erhitzt die Kathode, um Elektronen freizusetzen, während die Beschleunigungsspannung die Elektronen zur Anode beschleunigt."
+    },
+    {
+        "question": "Welchen Effekt hat die Heizspannung auf das Röntgenspektrum?",
+        "answer": "Die Heizspannung beeinflusst die Anzahl der freigesetzten Elektronen und somit die Intensität des Röntgenspektrums."
+    },
+    {
+        "question": "Welchen Effekt hat die Beschleunigungsspannung auf das Röntgenspektrum?",
+        "answer": "Die Beschleunigungsspannung bestimmt die maximale Energie und somit die minimale Wellenlänge der Röntgenstrahlung."
+    },
+    {
+        "question": "Was passiert mit dem Großteil der Energie der Elektronen in der Röntgenröhre?",
+        "answer": "Der Großteil der Energie der Elektronen wird in Wärme umgewandelt, die an die Anode abgegeben wird."
+    },
+    {
+        "question": "Wie entsteht Bremsstrahlung?",
+        "answer": "Bremsstrahlung entsteht, wenn die Elektronen in der Nähe des Atomkerns der Anode abgebremst werden."
+    },
+    {
+        "question": "Wie entsteht charakteristische Röntgenstrahlung?",
+        "answer": "Charakteristische Röntgenstrahlung entsteht, wenn ein Elektron aus einer inneren Schale herausgeschlagen wird und ein Elektron aus einer äußeren Schale den Platz einnimmt."
+    },
+    {
+        "question": "Welchen Einfluss hat das Anodenmaterial auf die Bremsstrahlung?",
+        "answer": "Das Anodenmaterial beeinflusst die Effizienz der Bremsstrahlungserzeugung."
+    },
+    {
+        "question": "Welchen Einfluss hat das Anodenmaterial auf die charakteristische Röntgenstrahlung?",
+        "answer": "Das Anodenmaterial bestimmt die Energien und Wellenlängen der charakteristischen Röntgenstrahlung."
+    },
+    {
+        "question": "Welchen Einfluss hat die Fokusgröße auf die Bildqualität?",
+        "answer": "Eine kleinere Fokusgröße führt zu einer besseren Bildqualität, aber auch zu einer geringeren Belastbarkeit der Röntgenröhre."
+    },
+    {
+        "question": "Was ist die Aufgabe der Zerfallskonstanten?",
+        "answer": "Die Zerfallskonstante (λ) ist ein Maß dafür, wie wahrscheinlich es ist, dass ein bestimmtes Atom in einem gegebenen Zeitraum zerfällt."
+    },
+    {
+        "question": "Wie lautet die Zerfallsgleichung von Co-60?",
+        "answer": "Die Zerfallsgleichung für Co-60 lautet: \\(^{60}_{27}Co \\rightarrow ^{60}_{28}Ni + e^- + \\bar{\\nu}_e + \\gamma\\)"
+    },
+     {
+        "question": "Wie ist die Formel zur Berechnung kinetischen Energie?",
+        "answer": "Ekin = 1/2 * m * v^2"
+    },
+    {
+        "question": "Was sind die technischen Herausforderungen bei der Erzeugung von Röntgenstrahlen?",
+        "answer": "Hohe Wärmeableitung der Anode, Vakuum in der Röhre, Hochspannungserzeugung, Strahlenabschirmung"
+    },
+    {
+         "question": "Nenne 2 Schalen von denen Elektronen herausgeschlagen werden können, wenn eine Wolfram-Anode mit Elektronen der Energie 50 keV beschossen wird?",
+        "answer": "K-Schale und L-Schale"
+    },
+    {
+         "question": "Was beschreibt das Röntgenspektrum?",
+        "answer": "Das Röntgenspektrum beinhaltet Bremsstrahlung und charakteristische Strahlung"
+    },
+    {
+         "question": "Bei doppeltem Objekt-Bild Abstand im Vergleich zum Fokus-Objekt Abstand, wie ist die Formel zur Berechnung der geometrischen Ungenauigkeit, wenn FOA=30cm und OBA=60cm ist?",
+        "answer": "geometrische Ungenauigkeit = (Fokusgröße * (OBA-FOA))/FOA"
+    },
+    {
+         "question": "In welcher Einheit wird die Aktivität angegeben?",
+        "answer": "MBq"
+    },
+   {
+         "question": "Was ist die Halbwertszeit von Cobaltisotop Co-60?",
+        "answer": "5,3 Jahre"
+    }
+
+
+
+        ];
+
+        function createButtons(data) {
+            const questionsList = document.getElementById('questionsList');
+            questionsList.innerHTML = '';
+            data.forEach((item) => {
+                const button = document.createElement('button');
+                button.classList.add('btn', 'btn-custom');
+                button.textContent = item.question;
+                button.onclick = () => showAnswer(item);
+                questionsList.appendChild(button);
+            });
+        }
+
+        function showAnswer(item) {
+            const answerBox = document.getElementById('answerBox');
+            const answerContent = document.getElementById('answerContent');
+            answerContent.innerHTML = `
+                <h3>${item.question}</h3>
+                ${item.answer}
+            `;
+            answerBox.style.display = 'block';
+            document.querySelectorAll('.btn-custom').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+              // Render MathJax
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, answerContent]);
+        }
+
+        function closeAnswer() {
+            const answerBox = document.getElementById('answerBox');
+            answerBox.style.display = 'none';
+        }
+
+        function filterQuestions() {
+            const filter = document.getElementById('filterDropdown').value;
+            const filteredData = qa_data.filter(item => {
+                if (filter === 'video') return item.answer.includes('<iframe');
+                if (filter === 'image') return item.answer.includes('<img');
+                return true;
+            });
+            createButtons(filteredData);
+        }
+
+        function toggleDarkMode() {
+            const body = document.body;
+            const toggleButton = document.querySelector('.mode-toggle');
+            body.classList.toggle('dark-mode');
+            if (body.classList.contains('dark-mode')) {
+                toggleButton.classList.remove('sun');
+                toggleButton.classList.add('moon');
+                toggleButton.innerHTML = '🌙';
+            } else {
+                toggleButton.classList.remove('moon');
+                toggleButton.classList.add('sun');
+                toggleButton.innerHTML = '☀️';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => createButtons(qa_data));
+    </script>
+</body>
+</html>
